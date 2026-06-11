@@ -1,0 +1,17 @@
+/* Import Font dari Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+/* Import Tailwind v4 */
+@import "tailwindcss";
+
+/* Mengganti font default Tailwind ke Plus Jakarta Sans */
+@theme {
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+}
+
+/* Memastikan seluruh teks di body menggunakan font baru ini */
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
