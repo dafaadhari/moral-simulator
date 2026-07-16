@@ -10,12 +10,19 @@ export const DilemmaForm = ({ scenario, number, total, onDecide }) => {
   const [validationError, setValidationError] = useState(null);
 
   const chosenOptionData = scenario.options.find(opt => opt.id === selectedOption);
+  const isLast = number === total;
 
   const handleSubmit = () => {
     if (!selectedOption) return setValidationError("Pilih salah satu tindakan dulu.");
     if (!reason.trim()) return setValidationError("Tulis alasan di balik pilihanmu dulu.");
     setValidationError(null);
-    setShowConfirm(true);
+
+    // Skenario 1-4 langsung lanjut; modal penegasan hanya di keputusan terakhir
+    if (isLast) {
+      setShowConfirm(true);
+    } else {
+      onDecide({ chosenOption: chosenOptionData, userReason: reason });
+    }
   };
 
   // Dipanggil setelah user menegaskan pilihannya lewat modal
@@ -87,38 +94,40 @@ export const DilemmaForm = ({ scenario, number, total, onDecide }) => {
         </Button>
       </section>
 
-      {/* Modal Konfirmasi Keputusan */}
-      <Modal
-        isOpen={showConfirm}
-        onClose={() => setShowConfirm(false)}
-        title="Yakin dengan keputusanmu?"
-        actions={
-          <>
-            <button
-              onClick={() => setShowConfirm(false)}
-              className="px-6 py-3 border border-navy-900/20 rounded-xl text-navy-900/70 hover:bg-navy-50 hover:text-navy-900 transition text-sm font-semibold"
-            >
-              Pikirkan Lagi
-            </button>
-            <button
-              onClick={handleConfirm}
-              className="px-6 py-3 bg-navy-900 hover:bg-navy-800 text-vanilla-50 rounded-xl transition text-sm font-bold shadow-md"
-            >
-              Ya, Saya Yakin
-            </button>
-          </>
-        }
-      >
-        <p className="text-sm leading-relaxed">
-          Kamu akan memilih <strong>Opsi {chosenOptionData?.id}</strong>:
-        </p>
-        <p className="font-display italic mt-2 text-navy-900">
-          "{chosenOptionData?.text}"
-        </p>
-        <p className="text-xs mt-4 text-navy-900/50">
-          Keputusan yang dikunci tidak bisa ditarik kembali.
-        </p>
-      </Modal>
+      {/* Modal penegasan — hanya muncul di keputusan terakhir, sebelum profil tampil */}
+      {isLast && (
+        <Modal
+          isOpen={showConfirm}
+          onClose={() => setShowConfirm(false)}
+          title="Ini keputusan terakhirmu. Yakin?"
+          actions={
+            <>
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="px-6 py-3 border border-navy-900/20 rounded-xl text-navy-900/70 hover:bg-navy-50 hover:text-navy-900 transition text-sm font-semibold"
+              >
+                Pikirkan Lagi
+              </button>
+              <button
+                onClick={handleConfirm}
+                className="px-6 py-3 bg-navy-900 hover:bg-navy-800 text-vanilla-50 rounded-xl transition text-sm font-bold shadow-md"
+              >
+                Ya, Tampilkan Profilku
+              </button>
+            </>
+          }
+        >
+          <p className="text-sm leading-relaxed">
+            Untuk skenario penutup ini kamu memilih <strong>Opsi {chosenOptionData?.id}</strong>:
+          </p>
+          <p className="font-display italic mt-2 text-navy-900">
+            "{chosenOptionData?.text}"
+          </p>
+          <p className="text-xs mt-4 text-navy-900/50">
+            Setelah ini seluruh keputusanmu dikunci dan profil moralmu akan disusun.
+          </p>
+        </Modal>
+      )}
     </div>
   );
 };

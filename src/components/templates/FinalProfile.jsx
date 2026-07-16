@@ -19,33 +19,7 @@ export const FinalProfile = ({ scores, history = [], resume, onRetryResume, onRe
         </p>
       </section>
 
-      {/* Resume AI — momen paling dramatis */}
-      <section className="mb-14 bg-navy-900 text-vanilla-50 p-8 md:p-10 rounded-2xl shadow-xl">
-        <h3 className="text-xs font-bold text-vanilla-100/60 uppercase tracking-widest mb-4">
-          Resume Gerbang Logika &mdash; oleh AI
-        </h3>
-        {resume.status === 'loading' ? (
-          <p className="font-display text-lg leading-relaxed text-vanilla-100/70 italic animate-pulse">
-            Menyusun profil moralmu dari kelima keputusan...
-          </p>
-        ) : (
-          <>
-            <p className="font-display text-lg md:text-xl leading-relaxed text-vanilla-100 whitespace-pre-line">
-              {resume.text}
-            </p>
-            {resume.status === 'failed' && (
-              <button
-                onClick={onRetryResume}
-                className="mt-6 px-5 py-2.5 bg-vanilla-50 hover:bg-vanilla-100 text-navy-900 rounded-xl transition text-sm font-bold"
-              >
-                Coba Susun Ulang
-              </button>
-            )}
-          </>
-        )}
-      </section>
-
-      {/* Skor sebagai kartu terpisah */}
+      {/* Skor sebagai kartu terpisah — langsung di bawah judul arketipe */}
       <section className="mb-14">
         <p className="text-sm font-bold text-navy-900 mb-4">Distribusi matriks &mdash; total skor</p>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -70,6 +44,32 @@ export const FinalProfile = ({ scores, history = [], resume, onRetryResume, onRe
             );
           })}
         </div>
+      </section>
+
+      {/* Resume AI — momen paling dramatis */}
+      <section className="mb-14 bg-navy-900 text-vanilla-50 p-8 md:p-10 rounded-2xl shadow-xl">
+        <h3 className="text-xs font-bold text-vanilla-100/60 uppercase tracking-widest mb-4">
+          Resume Gerbang Logika &mdash; oleh AI
+        </h3>
+        {resume.status === 'loading' ? (
+          <p className="font-display text-lg leading-relaxed text-vanilla-100/70 italic animate-pulse">
+            Menyusun profil moralmu dari kelima keputusan...
+          </p>
+        ) : (
+          <>
+            <p className="font-display text-lg md:text-xl leading-relaxed text-vanilla-100 whitespace-pre-line">
+              {resume.text}
+            </p>
+            {resume.status === 'failed' && (
+              <button
+                onClick={onRetryResume}
+                className="mt-6 px-5 py-2.5 bg-vanilla-50 hover:bg-vanilla-100 text-navy-900 rounded-xl transition text-sm font-bold"
+              >
+                Coba Susun Ulang
+              </button>
+            )}
+          </>
+        )}
       </section>
 
       {/* Rekap perjalanan — pilihan & alasan per skenario */}
