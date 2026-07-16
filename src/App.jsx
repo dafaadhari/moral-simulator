@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Header } from './components/organisms/Header.jsx';
+import { Footer } from './components/organisms/Footer.jsx';
 import { DilemmaForm } from './components/organisms/DilemmaForm.jsx';
 import { ResultCard } from './components/organisms/ResultCard.jsx';
 import { WelcomeScreen } from './components/templates/WelcomeScreen.jsx';
@@ -69,21 +70,24 @@ function App() {
   };
 
   return (
-    <div className="bg-slate-50 text-slate-800 font-sans min-h-screen py-12 px-4 md:px-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="bg-vanilla-100 text-navy-900 font-sans min-h-screen flex flex-col pt-10 px-4 md:px-6">
+      <div className="max-w-4xl mx-auto w-full flex flex-col flex-grow">
         <Header />
-        
+
         {/* Sistem Navigasi Layar */}
-        {!hasStarted ? (
-          <WelcomeScreen onStart={() => setHasStarted(true)} />
-        ) : isFinished ? (
-          <FinalProfile scores={totalScores} onRestart={handleRestartSimulation} />
-        ) : !resultData ? (
-          <DilemmaForm scenario={currentScenario} onAnalyze={handleAnalyzeMoral} />
-        ) : (
-          <ResultCard data={resultData} onReset={handleNextScenario} />
-        )}
-        
+        <main className="flex-grow">
+          {!hasStarted ? (
+            <WelcomeScreen onStart={() => setHasStarted(true)} />
+          ) : isFinished ? (
+            <FinalProfile scores={totalScores} onRestart={handleRestartSimulation} />
+          ) : !resultData ? (
+            <DilemmaForm scenario={currentScenario} onAnalyze={handleAnalyzeMoral} />
+          ) : (
+            <ResultCard data={resultData} onReset={handleNextScenario} />
+          )}
+        </main>
+
+        <Footer />
       </div>
     </div>
   );
