@@ -3,10 +3,9 @@ import { TextArea } from '../atoms/TextArea';
 import { Button } from '../atoms/Button';
 import { Modal } from '../atoms/Modal';
 
-export const DilemmaForm = ({ scenario, onAnalyze }) => {
+export const DilemmaForm = ({ scenario, number, total, onDecide }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [reason, setReason] = useState('');
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [validationError, setValidationError] = useState(null);
 
@@ -22,13 +21,7 @@ export const DilemmaForm = ({ scenario, onAnalyze }) => {
   // Dipanggil setelah user menegaskan pilihannya lewat modal
   const handleConfirm = () => {
     setShowConfirm(false);
-    setIsAnalyzing(true);
-
-    onAnalyze({
-      scenarioTitle: scenario.title,
-      chosenOption: chosenOptionData,
-      userReason: reason
-    }, () => setIsAnalyzing(false));
+    onDecide({ chosenOption: chosenOptionData, userReason: reason });
   };
 
   return (
@@ -36,7 +29,7 @@ export const DilemmaForm = ({ scenario, onAnalyze }) => {
       {/* Seksi 1: Skenario — tipografi terbuka, tanpa kartu */}
       <section>
         <p className="text-xs font-bold text-navy-900/40 uppercase tracking-[0.2em] mb-3">
-          Skenario {scenario.id} dari 3
+          Skenario {number} dari {total}
         </p>
         <h2 className="font-display text-3xl md:text-4xl font-bold text-navy-900 tracking-tight mb-5">
           {scenario.title}
@@ -46,26 +39,28 @@ export const DilemmaForm = ({ scenario, onAnalyze }) => {
         </p>
       </section>
 
-      {/* Seksi 2: Pilihan — tiap opsi kartu tersendiri */}
+      {/* Seksi 2: Pilihan — daftar vertikal, 5 opsi */}
       <section>
         <p className="text-sm font-bold text-navy-900 mb-4">Pilih tindakanmu</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="space-y-3">
           {scenario.options.map((opt) => (
             <button
               key={opt.id}
               onClick={() => setSelectedOption(opt.id)}
-              className={`p-5 rounded-xl border text-left transition-all ${
+              className={`w-full flex items-start gap-4 p-5 rounded-xl border text-left transition-all ${
                 selectedOption === opt.id
                   ? 'border-navy-900 bg-navy-900 text-vanilla-50 shadow-lg'
                   : 'border-navy-900/15 bg-vanilla-50 hover:border-navy-900/40 text-navy-900/70 hover:text-navy-900'
               }`}
             >
-              <span className={`font-display font-bold block mb-2 ${
-                selectedOption === opt.id ? 'text-vanilla-100' : 'text-navy-900'
+              <span className={`font-display font-bold shrink-0 w-8 h-8 flex items-center justify-center rounded-lg text-sm ${
+                selectedOption === opt.id
+                  ? 'bg-vanilla-50 text-navy-900'
+                  : 'bg-navy-900/5 text-navy-900'
               }`}>
-                Opsi {opt.id}
+                {opt.id}
               </span>
-              <span className="text-sm leading-relaxed">{opt.text}</span>
+              <span className="text-sm md:text-base leading-relaxed pt-1">{opt.text}</span>
             </button>
           ))}
         </div>
@@ -87,8 +82,8 @@ export const DilemmaForm = ({ scenario, onAnalyze }) => {
             {validationError}
           </p>
         )}
-        <Button onClick={handleSubmit} isLoading={isAnalyzing}>
-          Analisis Keputusan Saya
+        <Button onClick={handleSubmit}>
+          {number < total ? "Kunci Keputusan & Lanjut" : "Kunci Keputusan Terakhir"}
         </Button>
       </section>
 
@@ -121,7 +116,7 @@ export const DilemmaForm = ({ scenario, onAnalyze }) => {
           "{chosenOptionData?.text}"
         </p>
         <p className="text-xs mt-4 text-navy-900/50">
-          Keputusan yang dikirim tidak bisa ditarik kembali.
+          Keputusan yang dikunci tidak bisa ditarik kembali.
         </p>
       </Modal>
     </div>

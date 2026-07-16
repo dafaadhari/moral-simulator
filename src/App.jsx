@@ -2,109 +2,82 @@ import { useState } from 'react';
 import { Header } from './components/organisms/Header.jsx';
 import { Footer } from './components/organisms/Footer.jsx';
 import { DilemmaForm } from './components/organisms/DilemmaForm.jsx';
-import { ResultCard } from './components/organisms/ResultCard.jsx';
 import { WelcomeScreen } from './components/templates/WelcomeScreen.jsx';
 import { FinalProfile } from './components/templates/FinalProfile.jsx';
-import { scenarios } from './data/scenarios.js';
-import { analyzeMoralChoice } from './services/aiService.js';
+import { pickSessionScenarios } from './data/scenarios.js';
+import { resolveArchetype } from './data/archetypes.js';
+import { generateMoralResume } from './services/aiService.js';
 
-// Memanggil AI dan mengubah hasil/gagal menjadi bentuk yang seragam
-const fetchInsight = async (submission) => {
-  try {
-    const insight = await analyzeMoralChoice(
-      submission.scenarioTitle,
-      submission.chosenOption.text,
-      submission.userReason
-    );
-    return { insight, aiFailed: false };
-  } catch (error) {
-    return { insight: error.message, aiFailed: true };
-  }
-};
+const EMPTY_SCORES = { kepatuhan: 0, empati: 0, pragmatisme: 0, keadilan: 0, keutamaan: 0 };
 
 function App() {
-  const [hasStarted, setHasStarted] = useState(false);
+  // 5 skenario acak dari pool — di-set saat sesi dimulai
+  const [sessionScenarios, setSessionScenarios] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
-  const [resultData, setResultData] = useState(null);
   const [isFinished, setIsFinished] = useState(false);
-  const [isRetrying, setIsRetrying] = useState(false);
 
-  // Simpan submission terakhir agar analisis AI bisa diulang saat gagal
-  const [lastSubmission, setLastSubmission] = useState(null);
-
-  // "Buku Catatan": akumulasi skor + riwayat perjalanan untuk rekap akhir
-  const [totalScores, setTotalScores] = useState({ kepatuhan: 0, empati: 0, pragmatisme: 0 });
+  // "Buku Catatan": akumulasi skor + riwayat keputusan untuk resume & rekap akhir
+  const [totalScores, setTotalScores] = useState(EMPTY_SCORES);
   const [history, setHistory] = useState([]);
 
-  const currentScenario = scenarios[currentStep];
+  // Resume AI tunggal di akhir sesi: 'loading' | 'done' | 'failed'
+  const [resume, setResume] = useState({ status: 'loading', text: '' });
 
-  const handleAnalyzeMoral = async (userSubmission, stopLoading) => {
-    setLastSubmission(userSubmission);
+  const currentScenario = sessionScenarios?.[currentStep];
 
-    // 1. Tambahkan bobot pilihan user saat ini ke total skor keseluruhan
-    const weights = userSubmission.chosenOption.weights;
-    setTotalScores(prev => ({
-      kepatuhan: prev.kepatuhan + weights.kepatuhan,
-      empati: prev.empati + weights.empati,
-      pragmatisme: prev.pragmatisme + weights.pragmatisme
-    }));
-
-    // 2. Panggil AI
-    const { insight, aiFailed } = await fetchInsight(userSubmission);
-
-    stopLoading();
-
-    // 3. Tampilkan kartu hasil per skenario
-    setResultData({
-      scenarioTitle: userSubmission.scenarioTitle,
-      values: [
-        `Kepatuhan: ${weights.kepatuhan}`,
-        `Empati: ${weights.empati}`,
-        `Pragmatisme: ${weights.pragmatisme}`
-      ],
-      selectedAction: userSubmission.chosenOption.text,
-      userReason: userSubmission.userReason,
-      insight,
-      aiFailed
-    });
+  const handleStart = () => {
+    setSessionScenarios(pickSessionScenarios());
+    setCurrentStep(0);
+    setTotalScores(EMPTY_SCORES);
+    setHistory([]);
+    setIsFinished(false);
   };
 
-  // Ulangi hanya panggilan AI-nya — skor sudah tercatat, tidak dihitung dua kali
-  const handleRetryInsight = async () => {
-    setIsRetrying(true);
-    const { insight, aiFailed } = await fetchInsight(lastSubmission);
-    setResultData(prev => ({ ...prev, insight, aiFailed }));
-    setIsRetrying(false);
-  };
-
-  const handleNextScenario = () => {
-    // Catat hasil skenario ini ke riwayat untuk rekap di profil akhir
-    setHistory(prev => [...prev, {
-      title: resultData.scenarioTitle,
-      action: resultData.selectedAction,
-      reason: resultData.userReason,
-      insight: resultData.insight,
-      aiFailed: resultData.aiFailed
-    }]);
-
-    setResultData(null);
-
-    if (currentStep < scenarios.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      // Jika soal sudah habis, ganti layar ke Profil Akhir
-      setIsFinished(true);
+  const requestResume = async (entries, totals) => {
+    setResume({ status: 'loading', text: '' });
+    try {
+      const text = await generateMoralResume(entries, totals, resolveArchetype(totals));
+      setResume({ status: 'done', text });
+    } catch (error) {
+      setResume({ status: 'failed', text: error.message });
     }
   };
 
-  // Fungsi untuk me-reset semuanya ke kondisi semula (titik nol)
-  const handleRestartSimulation = () => {
-    setHasStarted(false);
+  // Dipanggil setelah user menegaskan pilihan lewat modal konfirmasi.
+  // Tidak ada panggilan AI di tengah sesi — skor tersembunyi sampai akhir.
+  const handleDecide = ({ chosenOption, userReason }) => {
+    const weights = chosenOption.weights;
+    const newTotals = Object.fromEntries(
+      Object.keys(totalScores).map(key => [key, totalScores[key] + weights[key]])
+    );
+    const newHistory = [...history, {
+      title: currentScenario.title,
+      context: currentScenario.context,
+      action: chosenOption.text,
+      reason: userReason
+    }];
+
+    setTotalScores(newTotals);
+    setHistory(newHistory);
+
+    if (currentStep < sessionScenarios.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      setIsFinished(true);
+      requestResume(newHistory, newTotals);
+    }
+  };
+
+  // Ulangi hanya panggilan AI-nya — skor & riwayat tidak berubah
+  const handleRetryResume = () => requestResume(history, totalScores);
+
+  const handleRestart = () => {
+    setSessionScenarios(null);
     setCurrentStep(0);
     setIsFinished(false);
-    setTotalScores({ kepatuhan: 0, empati: 0, pragmatisme: 0 });
+    setTotalScores(EMPTY_SCORES);
     setHistory([]);
-    setLastSubmission(null);
+    setResume({ status: 'loading', text: '' });
   };
 
   return (
@@ -114,18 +87,23 @@ function App() {
 
         {/* Sistem Navigasi Layar */}
         <main className="flex-grow">
-          {!hasStarted ? (
-            <WelcomeScreen onStart={() => setHasStarted(true)} />
+          {!sessionScenarios ? (
+            <WelcomeScreen onStart={handleStart} />
           ) : isFinished ? (
-            <FinalProfile scores={totalScores} history={history} onRestart={handleRestartSimulation} />
-          ) : !resultData ? (
-            <DilemmaForm scenario={currentScenario} onAnalyze={handleAnalyzeMoral} />
+            <FinalProfile
+              scores={totalScores}
+              history={history}
+              resume={resume}
+              onRetryResume={handleRetryResume}
+              onRestart={handleRestart}
+            />
           ) : (
-            <ResultCard
-              data={resultData}
-              onReset={handleNextScenario}
-              onRetry={handleRetryInsight}
-              isRetrying={isRetrying}
+            <DilemmaForm
+              key={currentScenario.id}
+              scenario={currentScenario}
+              number={currentStep + 1}
+              total={sessionScenarios.length}
+              onDecide={handleDecide}
             />
           )}
         </main>

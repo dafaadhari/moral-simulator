@@ -12,6 +12,14 @@ const MATRICES = [
   {
     title: "Pragmatisme",
     description: "Fokus pada hasil akhir, efisiensi, dan solusi paling logis di lapangan."
+  },
+  {
+    title: "Keadilan",
+    description: "Sejauh mana Anda menimbang semua pihak dengan takaran yang setara, tanpa favoritisme."
+  },
+  {
+    title: "Keutamaan",
+    description: "Kesetiaan Anda pada integritas dan karakter diri — jadi orang macam apa Anda lewat pilihan ini."
   }
 ];
 
@@ -27,11 +35,11 @@ export const WelcomeScreen = ({ onStart }) => {
           Selamat Datang di Gerbang Logika
         </h2>
         <p className="text-lg text-navy-900/75 leading-relaxed">
-          Anda akan dihadapkan pada serangkaian skenario dilema. Tidak ada jawaban benar atau salah. Sistem ini akan mengkalkulasi keputusan Anda berdasarkan tiga matriks utama.
+          Anda akan dihadapkan pada lima skenario dilema — diambil acak dari kumpulan kasus, jadi setiap sesi berbeda. Tidak ada jawaban benar atau salah. Sistem akan mengkalkulasi keputusan Anda berdasarkan lima matriks moral.
         </p>
       </section>
 
-      {/* Tiga matriks sebagai kartu terpisah */}
+      {/* Lima matriks sebagai kartu terpisah */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-14">
         {MATRICES.map((m, i) => (
           <div key={m.title} className="p-6 bg-vanilla-50 border border-navy-900/15 rounded-xl">
@@ -44,7 +52,7 @@ export const WelcomeScreen = ({ onStart }) => {
 
       <section className="max-w-md">
         <p className="text-sm text-navy-900/50 mb-2">
-          AI akan membaca alasan di balik setiap keputusan Anda untuk memastikan konsistensi pola pikir.
+          Skormu disembunyikan sampai akhir. Setelah semua keputusan terkunci, AI menyusun resume utuh tentang cara berpikirmu.
         </p>
         <Button onClick={onStart}>Mulai Simulasi</Button>
       </section>
