@@ -1,11 +1,16 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey);
 
 export const analyzeMoralChoice = async (scenario, action, reason) => {
+  if (!apiKey) {
+    console.error("VITE_GEMINI_API_KEY belum diisi. Lihat .env.example.");
+    return "Analisis AI belum aktif karena API key belum dikonfigurasi. Salin .env.example menjadi .env.local dan isi VITE_GEMINI_API_KEY.";
+  }
+
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
     const prompt = `
       Anda adalah seorang psikolog dan ahli etika. 
