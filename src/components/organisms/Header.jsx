@@ -6,7 +6,7 @@ export const Header = () => {
           Moral Reasoning Simulator
         </h1>
         <p className="text-sm text-navy-900/50">
-          Memahami struktur berpikir di balik setiap keputusan
+          Lihat caramu mengambil keputusan — apa adanya
         </p>
       </div>
     </header>

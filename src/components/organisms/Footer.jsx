@@ -5,7 +5,7 @@ export const Footer = () => {
         <span className="font-display font-semibold text-navy-900/70">
           Moral Reasoning Simulator
         </span>
-        <span>&copy; 2026 &middot; Dibuat untuk memahami cara berpikir, bukan menghakimi</span>
+        <span>&copy; 2026 &middot; Hasilnya bukan diagnosis &mdash; tapi juga bukan pujian</span>
       </div>
     </footer>
   );

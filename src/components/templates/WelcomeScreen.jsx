@@ -3,23 +3,23 @@ import { Button } from '../atoms/Button.jsx';
 const MATRICES = [
   {
     title: "Kepatuhan",
-    description: "Seberapa kuat Anda berpegang pada aturan, hukum, dan prosedur yang berlaku."
+    description: "Seberapa kuat kamu berpegang pada aturan, hukum, dan prosedur yang berlaku."
   },
   {
     title: "Empati",
-    description: "Kepedulian Anda terhadap kondisi emosional dan penderitaan individu lain."
+    description: "Kepedulianmu terhadap kondisi emosional dan penderitaan orang lain."
   },
   {
     title: "Pragmatisme",
-    description: "Fokus pada hasil akhir, efisiensi, dan solusi paling logis di lapangan."
+    description: "Fokusmu pada hasil akhir, efisiensi, dan solusi paling logis di lapangan."
   },
   {
     title: "Keadilan",
-    description: "Sejauh mana Anda menimbang semua pihak dengan takaran yang setara, tanpa favoritisme."
+    description: "Sejauh mana kamu menimbang semua pihak dengan takaran yang sama, tanpa pilih kasih."
   },
   {
     title: "Keutamaan",
-    description: "Kesetiaan Anda pada integritas dan karakter diri — jadi orang macam apa Anda lewat pilihan ini."
+    description: "Kesetiaanmu pada kejujuran dan integritas diri — bahkan saat itu jalan paling sulit."
   }
 ];
 
@@ -29,13 +29,13 @@ export const WelcomeScreen = ({ onStart }) => {
       {/* Hero terbuka, tanpa kartu pembungkus */}
       <section className="max-w-2xl mb-14">
         <p className="text-xs font-bold text-navy-900/40 uppercase tracking-[0.2em] mb-4">
-          Fase Inisiasi
+          Sebelum mulai
         </p>
         <h2 className="font-display text-4xl md:text-5xl font-bold text-navy-900 tracking-tight mb-6 leading-tight">
-          Selamat Datang di Gerbang Logika
+          Lima dilema. Tidak ada jawaban benar.
         </h2>
         <p className="text-lg text-navy-900/75 leading-relaxed">
-          Anda akan dihadapkan pada lima skenario dilema — diambil acak dari kumpulan kasus, jadi setiap sesi berbeda. Tidak ada jawaban benar atau salah. Sistem akan mengkalkulasi keputusan Anda berdasarkan lima matriks moral.
+          Pilih tindakanmu, tulis alasan jujurmu. Lima kasus diambil acak, jadi tiap sesi beda. Keputusanmu diukur lewat lima matriks:
         </p>
       </section>
 
@@ -52,9 +52,9 @@ export const WelcomeScreen = ({ onStart }) => {
 
       <section className="max-w-md">
         <p className="text-sm text-navy-900/50 mb-2">
-          Skormu disembunyikan sampai akhir. Setelah semua keputusan terkunci, AI menyusun resume utuh tentang cara berpikirmu.
+          Skormu disembunyikan sampai akhir. Setelah semua keputusan terkunci, AI menilai cara berpikirmu apa adanya — termasuk bagian yang tidak enak didengar.
         </p>
-        <Button onClick={onStart}>Mulai Simulasi</Button>
+        <Button onClick={onStart}>Mulai</Button>
       </section>
     </div>
   );

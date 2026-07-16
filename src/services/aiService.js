@@ -27,24 +27,26 @@ export const generateMoralResume = async (entries, totals, archetype) => {
     .join(", ");
 
   const prompt = `
-Anda adalah seorang psikolog dan ahli etika yang menulis dengan gaya esais — tajam, hangat, dan tidak menghakimi.
+Kamu adalah teman yang cerdas dan blak-blakan — tipe yang berani bilang hal yang tidak enak didengar karena peduli, bukan karena kasar. Bukan motivator, bukan penjilat.
 
-Seorang pengguna baru saja menyelesaikan simulasi dilema moral. Berikut kelima keputusannya:
+Seseorang baru saja menyelesaikan simulasi dilema moral. Berikut kelima keputusannya:
 
 ${decisionsText}
 
 Skor total per aliran moral: ${totalsText}.
-Arketipe yang dihasilkan sistem: "${archetype.title}".
+Label yang dihasilkan sistem: "${archetype.title}".
 
-Tugas Anda: tulis resume moral 2 paragraf pendek (total 5-8 kalimat) tentang cara berpikir orang ini.
-- Cari POLA lintas keputusan: apa yang konsisten, dan di keputusan mana ia menyimpang dari polanya sendiri?
-- Bandingkan alasan yang ia TULIS dengan tindakan yang ia PILIH — apakah selaras, atau ada ketegangan tersembunyi?
+Tugasmu: tulis penilaian 2 paragraf pendek (total 5-8 kalimat) tentang cara berpikir orang ini.
+- Cari POLA lintas keputusan: apa yang konsisten, dan di mana ia menyimpang dari polanya sendiri.
+- Bandingkan alasan yang ia TULIS dengan tindakan yang ia PILIH. Kalau alasannya terdengar seperti pembenaran diri atau rasionalisasi, bilang langsung.
+- Tunjuk minimal satu kelemahan atau titik buta yang nyata dari datanya — jangan dibungkus manis. Kalau ada kekuatan yang sungguhan, sebut juga, tapi jangan dipaksakan biar seimbang.
 - Rujuk minimal satu skenario secara spesifik (sebut situasinya, jangan sebut nomor).
-- Sapa pengguna dengan "Anda". Jangan menghakimi benar/salah.
+- Sapa dia dengan "kamu". Boleh kritis, tapi jangan memvonis dia orang baik atau jahat — nilai keputusannya, bukan harga dirinya.
 
 ATURAN GAYA YANG WAJIB:
-- DILARANG membuka dengan frasa template seperti "Pilihan Anda mencerminkan...", "Tindakan Anda menunjukkan...", "Pola pikir Anda...", "Keputusan-keputusan Anda...", atau variasi serupa.
-- Kalimat pertama HARUS langsung menunjuk observasi paling spesifik dan menarik dari sesi ini — sebuah detail, ketegangan, atau kejutan dari data, bukan pernyataan umum.
+- Bahasa sehari-hari yang langsung ke intinya. Tanpa basa-basi, tanpa jargon psikologi, tanpa kalimat berbunga-bunga.
+- DILARANG membuka dengan frasa template seperti "Pilihanmu mencerminkan...", "Tindakanmu menunjukkan...", "Pola pikirmu...", "Keputusan-keputusanmu...", atau variasi serupa.
+- Kalimat pertama HARUS langsung menunjuk observasi paling spesifik dan menarik dari sesi ini — sebuah detail, kontradiksi, atau kejutan dari data, bukan pernyataan umum.
 - Tanpa format markdown, tanpa daftar. Prosa mengalir saja.
   `;
 

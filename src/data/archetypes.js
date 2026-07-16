@@ -1,27 +1,29 @@
+// Arketipe ditulis dua sisi: kekuatan nyata + titik buta/biayanya.
+// Gaya bahasa: ceplas ceplos, sapaan "kamu", tanpa gelar dramatis.
 export const ARCHETYPES = {
   kepatuhan: {
-    title: "Sang Penjaga Keteraturan",
-    description: "Anda memiliki komitmen yang tak tergoyahkan terhadap aturan dan integritas sistem. Bagi Anda, keadilan sejati hanya bisa dicapai jika prosedur ditegakkan tanpa pandang bulu."
+    title: "Pemegang Aturan",
+    description: "Kamu main lewat prosedur. Bagusnya: kamu konsisten dan omonganmu bisa dipegang. Buruknya: aturan sering kamu pakai jadi tameng — biar bukan kamu yang disalahkan kalau hasilnya menyakiti orang. Ikut aturan itu gampang; yang susah itu bertanggung jawab atas akibatnya."
   },
   empati: {
-    title: "Sang Pelindung Kemanusiaan",
-    description: "Hati nurani adalah kompas utama Anda. Anda bersedia membengkokkan atau bahkan melanggar sistem yang kaku jika itu berarti menyelamatkan seseorang dari penderitaan."
+    title: "Penolong",
+    description: "Perasaanmu jalan duluan sebelum logika, dan orang di sekitarmu beruntung karenanya. Tapi kamu gampang pilih kasih: yang kamu tolong biasanya yang paling dekat atau paling terlihat menderita, bukan yang paling butuh. Dan kamu target empuk untuk dimanipulasi lewat cerita sedih."
   },
   pragmatisme: {
-    title: "Sang Realis Pragmatis",
-    description: "Anda adalah pemikir taktis. Anda tidak terjebak pada dogma atau emosi sesaat, melainkan berfokus pada hasil akhir yang paling efisien dan membawa keuntungan terbesar (atau kerugian terkecil) di dunia nyata."
+    title: "Pemburu Hasil",
+    description: "Buat kamu, yang penting beres — dan memang sering beres. Tapi kamu gampang memperlakukan orang sebagai angka, dan tergoda memotong kompas kalau tidak ada yang lihat. Reputasi yang dibangun bertahun-tahun bisa habis oleh satu jalan pintas yang ketahuan."
   },
   keadilan: {
-    title: "Sang Penegak Keadilan",
-    description: "Kesetaraan adalah harga mati bagi Anda. Anda menimbang setiap pihak dengan takaran yang sama — dan bila aturan justru melahirkan ketimpangan, Anda tak segan menggugat aturan itu sendiri."
+    title: "Pengadil",
+    description: "Semua harus dapat takaran yang sama — kamu konsisten soal itu, bahkan berani melawan aturan yang timpang. Masalahnya, hidup jarang serapi timbanganmu. Kesetaraanmu bisa berubah kaku dan dingin: memukul rata orang-orang yang kondisinya jelas tidak rata."
   },
   keutamaan: {
-    title: "Sang Pemegang Integritas",
-    description: "Pertanyaan Anda bukan \"apa yang dibolehkan\", melainkan \"jadi orang macam apa saya jika melakukannya\". Kejujuran dan keutuhan karakter Anda tidak bisa ditawar, bahkan ketika jalan itu paling sulit."
+    title: "Penjaga Integritas",
+    description: "Kamu tidak mau bohong dan tidak mau pura-pura. Terhormat. Tapi jujur saja: kadang kejujuranmu lebih tentang menjaga rasa bersihmu sendiri daripada menolong siapa pun. Merasa benar itu candu — dan sering kali orang lain yang kena getahnya."
   }
 };
 
-// Menentukan arketipe dari skor total; seri ≥2 aliran → "Sang Penyeimbang"
+// Menentukan arketipe dari skor total; seri ≥2 aliran → hasil ambigu, katakan apa adanya
 export const resolveArchetype = (scores) => {
   const maxScore = Math.max(...Object.keys(ARCHETYPES).map(key => scores[key]));
   const winners = Object.keys(ARCHETYPES).filter(key => scores[key] === maxScore);
@@ -30,10 +32,10 @@ export const resolveArchetype = (scores) => {
     return {
       winners,
       maxScore,
-      title: "Sang Penyeimbang",
-      description: `Kompas moral Anda tidak berpihak pada satu kutub. Nilai ${winners
+      title: "Penyeimbang — atau Peragu",
+      description: `Skormu seri antara ${winners
         .map(k => k.charAt(0).toUpperCase() + k.slice(1))
-        .join(" dan ")} sama-sama menuntun keputusan Anda — sebuah keseimbangan yang langka antara prinsip-prinsip yang sering dianggap bertentangan.`
+        .join(" dan ")}. Ada dua kemungkinan: kamu memang luwes membaca situasi, atau kamu belum punya pendirian dan ikut arah angin. Lima keputusan belum cukup membuktikan yang mana — tapi kamu sendiri biasanya tahu jawabannya.`
     };
   }
 

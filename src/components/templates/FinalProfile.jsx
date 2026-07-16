@@ -9,7 +9,7 @@ export const FinalProfile = ({ scores, history = [], resume, onRetryResume, onRe
       {/* Arketipe — tipografi terbuka */}
       <section className="max-w-2xl mb-14">
         <p className="text-xs font-bold text-navy-900/40 uppercase tracking-[0.2em] mb-4">
-          Profil Moral Keseluruhan
+          Hasilmu
         </p>
         <h2 className="font-display text-4xl md:text-5xl font-bold text-navy-900 tracking-tight mb-6 leading-tight">
           {archetype}
@@ -21,7 +21,7 @@ export const FinalProfile = ({ scores, history = [], resume, onRetryResume, onRe
 
       {/* Skor sebagai kartu terpisah — langsung di bawah judul arketipe */}
       <section className="mb-14">
-        <p className="text-sm font-bold text-navy-900 mb-4">Distribusi matriks &mdash; total skor</p>
+        <p className="text-sm font-bold text-navy-900 mb-4">Skor per matriks</p>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {Object.keys(ARCHETYPES).map((key) => {
             const isTop = scores[key] === maxScore;
@@ -49,11 +49,11 @@ export const FinalProfile = ({ scores, history = [], resume, onRetryResume, onRe
       {/* Resume AI — momen paling dramatis */}
       <section className="mb-14 bg-navy-900 text-vanilla-50 p-8 md:p-10 rounded-2xl shadow-xl">
         <h3 className="text-xs font-bold text-vanilla-100/60 uppercase tracking-widest mb-4">
-          Resume Gerbang Logika &mdash; oleh AI
+          Penilaian AI &mdash; apa adanya
         </h3>
         {resume.status === 'loading' ? (
           <p className="font-display text-lg leading-relaxed text-vanilla-100/70 italic animate-pulse">
-            Menyusun profil moralmu dari kelima keputusan...
+            Membaca kelima keputusanmu...
           </p>
         ) : (
           <>
@@ -65,7 +65,7 @@ export const FinalProfile = ({ scores, history = [], resume, onRetryResume, onRe
                 onClick={onRetryResume}
                 className="mt-6 px-5 py-2.5 bg-vanilla-50 hover:bg-vanilla-100 text-navy-900 rounded-xl transition text-sm font-bold"
               >
-                Coba Susun Ulang
+                Coba Lagi
               </button>
             )}
           </>
@@ -75,7 +75,7 @@ export const FinalProfile = ({ scores, history = [], resume, onRetryResume, onRe
       {/* Rekap perjalanan — pilihan & alasan per skenario */}
       {history.length > 0 && (
         <section className="mb-14">
-          <p className="text-sm font-bold text-navy-900 mb-4">Rekap perjalananmu</p>
+          <p className="text-sm font-bold text-navy-900 mb-4">Keputusanmu tadi</p>
           <div className="space-y-4">
             {history.map((item, i) => (
               <div key={i} className="p-6 bg-vanilla-50 border border-navy-900/15 rounded-xl">
@@ -92,9 +92,9 @@ export const FinalProfile = ({ scores, history = [], resume, onRetryResume, onRe
 
       <section className="max-w-md">
         <p className="text-sm text-navy-900/50 mb-2">
-          Lima kasus diambil acak dari kumpulan — sesi berikutnya akan berbeda.
+          Lima kasus diambil acak — sesi berikutnya beda.
         </p>
-        <Button onClick={onRestart}>Ulangi Simulasi</Button>
+        <Button onClick={onRestart}>Ulangi</Button>
       </section>
     </div>
   );

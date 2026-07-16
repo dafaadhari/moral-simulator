@@ -11,7 +11,7 @@
 export const scenarios = [
   {
     id: 1,
-    title: "Dilema Sang Pekerja",
+    title: "Rekan Kerja yang Mencuri",
     context: "Kamu mengetahui rekan kerjamu mengambil sebagian kecil dana kas perusahaan untuk biaya pengobatan anaknya yang sedang kritis. Aturan perusahaan mewajibkan pelaporan untuk setiap kecurangan, dan sanksinya adalah pemecatan.",
     options: [
       {

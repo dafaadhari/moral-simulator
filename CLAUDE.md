@@ -33,6 +33,7 @@ File kunci:
 5. **Urutan aliran pada opsi A–E diacak antar skenario** — jangan diseragamkan, nanti polanya bisa dihafal.
 6. **Selera desain user**: layout terbuka per seksi, KARTU HANYA untuk unit kecil (opsi, skor) — jangan bungkus konten dalam satu kartu besar; tanpa ornamen dekoratif (❦ ✦, border ganda); palet Light Vanilla `#FFF7E6` + Midnight Navy `#0A122A` (token `vanilla-*`/`navy-*`); Fraunces untuk judul.
 7. Modal konfirmasi hanya di keputusan ke-5 (terakhir), bukan tiap skenario.
+8. **Bahasa: ceplas ceplos, dua sisi.** Sapaan "kamu", tanpa gelar dramatis ("Sang...", "Gerbang Logika" dilarang), tanpa basa-basi. Setiap arketipe WAJIB memuat kekuatan DAN titik buta/biayanya — hasil yang serba positif itu tidak jujur dan user tidak mau. Prompt AI berpersona teman blak-blakan: menunjuk rasionalisasi & kelemahan secara langsung, menilai keputusan tanpa memvonis orangnya.
 
 ## Keamanan API key
 
