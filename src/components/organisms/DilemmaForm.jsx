@@ -8,12 +8,14 @@ export const DilemmaForm = ({ scenario, onAnalyze }) => {
   const [reason, setReason] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [validationError, setValidationError] = useState(null);
 
   const chosenOptionData = scenario.options.find(opt => opt.id === selectedOption);
 
   const handleSubmit = () => {
-    if (!selectedOption) return alert("Pilih salah satu tindakan dulu!");
-    if (!reason.trim()) return alert("Jangan lupa ketik alasan utamanya!");
+    if (!selectedOption) return setValidationError("Pilih salah satu tindakan dulu.");
+    if (!reason.trim()) return setValidationError("Tulis alasan di balik pilihanmu dulu.");
+    setValidationError(null);
     setShowConfirm(true);
   };
 
@@ -75,8 +77,16 @@ export const DilemmaForm = ({ scenario, onAnalyze }) => {
           label="Mengapa kamu memilih tindakan tersebut?"
           placeholder="Jujur saja, ketik alasan utamanya di sini..."
           value={reason}
-          onChange={(e) => setReason(e.target.value)}
+          onChange={(e) => {
+            setReason(e.target.value);
+            if (validationError) setValidationError(null);
+          }}
         />
+        {validationError && (
+          <p className="mt-3 text-sm font-medium text-red-700" role="alert">
+            {validationError}
+          </p>
+        )}
         <Button onClick={handleSubmit} isLoading={isAnalyzing}>
           Analisis Keputusan Saya
         </Button>

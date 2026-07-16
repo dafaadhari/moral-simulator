@@ -1,6 +1,6 @@
 // src/components/organisms/ResultCard.jsx
 
-export const ResultCard = ({ data, onReset }) => {
+export const ResultCard = ({ data, onReset, onRetry, isRetrying }) => {
   if (!data) return null;
 
   return (
@@ -50,6 +50,15 @@ export const ResultCard = ({ data, onReset }) => {
         <p className="font-display text-lg md:text-xl leading-relaxed text-vanilla-100">
           {data.insight}
         </p>
+        {data.aiFailed && (
+          <button
+            onClick={onRetry}
+            disabled={isRetrying}
+            className="mt-6 px-5 py-2.5 bg-vanilla-50 hover:bg-vanilla-100 text-navy-900 rounded-xl transition text-sm font-bold disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {isRetrying ? "Menghubungi AI..." : "Coba Analisis Lagi"}
+          </button>
+        )}
       </section>
 
       {/* Tombol Lanjut */}

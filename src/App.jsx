@@ -4,22 +4,43 @@ import { Footer } from './components/organisms/Footer.jsx';
 import { DilemmaForm } from './components/organisms/DilemmaForm.jsx';
 import { ResultCard } from './components/organisms/ResultCard.jsx';
 import { WelcomeScreen } from './components/templates/WelcomeScreen.jsx';
-import { FinalProfile } from './components/templates/FinalProfile.jsx'; // <-- Import Layar Akhir
+import { FinalProfile } from './components/templates/FinalProfile.jsx';
 import { scenarios } from './data/scenarios.js';
 import { analyzeMoralChoice } from './services/aiService.js';
 
+// Memanggil AI dan mengubah hasil/gagal menjadi bentuk yang seragam
+const fetchInsight = async (submission) => {
+  try {
+    const insight = await analyzeMoralChoice(
+      submission.scenarioTitle,
+      submission.chosenOption.text,
+      submission.userReason
+    );
+    return { insight, aiFailed: false };
+  } catch (error) {
+    return { insight: error.message, aiFailed: true };
+  }
+};
+
 function App() {
   const [hasStarted, setHasStarted] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0); 
+  const [currentStep, setCurrentStep] = useState(0);
   const [resultData, setResultData] = useState(null);
-  const [isFinished, setIsFinished] = useState(false); // <-- Penanda simulasi tamat
+  const [isFinished, setIsFinished] = useState(false);
+  const [isRetrying, setIsRetrying] = useState(false);
 
-  // State "Buku Catatan" untuk mengakumulasi skor selama simulasi
+  // Simpan submission terakhir agar analisis AI bisa diulang saat gagal
+  const [lastSubmission, setLastSubmission] = useState(null);
+
+  // "Buku Catatan": akumulasi skor + riwayat perjalanan untuk rekap akhir
   const [totalScores, setTotalScores] = useState({ kepatuhan: 0, empati: 0, pragmatisme: 0 });
-  
+  const [history, setHistory] = useState([]);
+
   const currentScenario = scenarios[currentStep];
 
   const handleAnalyzeMoral = async (userSubmission, stopLoading) => {
+    setLastSubmission(userSubmission);
+
     // 1. Tambahkan bobot pilihan user saat ini ke total skor keseluruhan
     const weights = userSubmission.chosenOption.weights;
     setTotalScores(prev => ({
@@ -29,32 +50,47 @@ function App() {
     }));
 
     // 2. Panggil AI
-    const aiInsight = await analyzeMoralChoice(
-      userSubmission.scenarioTitle,
-      userSubmission.chosenOption.text,
-      userSubmission.userReason
-    );
+    const { insight, aiFailed } = await fetchInsight(userSubmission);
 
     stopLoading();
-    
+
     // 3. Tampilkan kartu hasil per skenario
     setResultData({
+      scenarioTitle: userSubmission.scenarioTitle,
       values: [
-        `Kepatuhan: ${weights.kepatuhan}`, 
+        `Kepatuhan: ${weights.kepatuhan}`,
         `Empati: ${weights.empati}`,
         `Pragmatisme: ${weights.pragmatisme}`
       ],
       selectedAction: userSubmission.chosenOption.text,
       userReason: userSubmission.userReason,
-      insight: aiInsight
+      insight,
+      aiFailed
     });
   };
 
+  // Ulangi hanya panggilan AI-nya — skor sudah tercatat, tidak dihitung dua kali
+  const handleRetryInsight = async () => {
+    setIsRetrying(true);
+    const { insight, aiFailed } = await fetchInsight(lastSubmission);
+    setResultData(prev => ({ ...prev, insight, aiFailed }));
+    setIsRetrying(false);
+  };
+
   const handleNextScenario = () => {
-    setResultData(null); 
+    // Catat hasil skenario ini ke riwayat untuk rekap di profil akhir
+    setHistory(prev => [...prev, {
+      title: resultData.scenarioTitle,
+      action: resultData.selectedAction,
+      reason: resultData.userReason,
+      insight: resultData.insight,
+      aiFailed: resultData.aiFailed
+    }]);
+
+    setResultData(null);
 
     if (currentStep < scenarios.length - 1) {
-      setCurrentStep(currentStep + 1); 
+      setCurrentStep(currentStep + 1);
     } else {
       // Jika soal sudah habis, ganti layar ke Profil Akhir
       setIsFinished(true);
@@ -67,6 +103,8 @@ function App() {
     setCurrentStep(0);
     setIsFinished(false);
     setTotalScores({ kepatuhan: 0, empati: 0, pragmatisme: 0 });
+    setHistory([]);
+    setLastSubmission(null);
   };
 
   return (
@@ -79,11 +117,16 @@ function App() {
           {!hasStarted ? (
             <WelcomeScreen onStart={() => setHasStarted(true)} />
           ) : isFinished ? (
-            <FinalProfile scores={totalScores} onRestart={handleRestartSimulation} />
+            <FinalProfile scores={totalScores} history={history} onRestart={handleRestartSimulation} />
           ) : !resultData ? (
             <DilemmaForm scenario={currentScenario} onAnalyze={handleAnalyzeMoral} />
           ) : (
-            <ResultCard data={resultData} onReset={handleNextScenario} />
+            <ResultCard
+              data={resultData}
+              onReset={handleNextScenario}
+              onRetry={handleRetryInsight}
+              isRetrying={isRetrying}
+            />
           )}
         </main>
 

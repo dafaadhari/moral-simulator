@@ -15,7 +15,7 @@ const ARCHETYPES = {
   }
 };
 
-export const FinalProfile = ({ scores, onRestart }) => {
+export const FinalProfile = ({ scores, history = [], onRestart }) => {
   // Mencari skor tertinggi untuk menentukan "Arketipe" atau julukan moral user
   const maxScore = Math.max(scores.kepatuhan, scores.empati, scores.pragmatisme);
   const winners = Object.keys(ARCHETYPES).filter(key => scores[key] === maxScore);
@@ -74,6 +74,29 @@ export const FinalProfile = ({ scores, onRestart }) => {
           })}
         </div>
       </section>
+
+      {/* Rekap perjalanan — pilihan & analisis AI per skenario */}
+      {history.length > 0 && (
+        <section className="mb-14">
+          <p className="text-sm font-bold text-navy-900 mb-4">Rekap perjalananmu</p>
+          <div className="space-y-4">
+            {history.map((item, i) => (
+              <div key={i} className="p-6 bg-vanilla-50 border border-navy-900/15 rounded-xl">
+                <p className="text-xs font-bold text-navy-900/40 uppercase tracking-[0.2em] mb-2">
+                  Skenario {i + 1} &mdash; {item.title}
+                </p>
+                <p className="text-navy-900 font-medium mb-1">{item.action}</p>
+                <p className="text-sm text-navy-900/60 mb-4">Alasanmu: "{item.reason}"</p>
+                {!item.aiFailed && (
+                  <p className="font-display text-sm text-navy-900/75 italic leading-relaxed border-l-2 border-navy-900/20 pl-4">
+                    {item.insight}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="max-w-md">
         <Button onClick={onRestart}>Ulangi Simulasi</Button>
